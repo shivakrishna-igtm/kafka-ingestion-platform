@@ -1,0 +1,30 @@
+syntax = "proto3";
+package preview;
+
+service PreviewService {
+  rpc PreviewPayload (PreviewRequest) returns (PreviewResponse);
+}
+
+message PreviewRequest {
+  string topic_name = 1;
+  string registered_schema_json = 2;
+  repeated string sample_payloads = 3;
+}
+
+message ColumnDef {
+  string name = 1;
+  string snowflake_type = 2;
+  bool nullable = 3;
+}
+
+message PreviewRow {
+  map<string, string> values = 1;
+}
+
+message PreviewResponse {
+  repeated ColumnDef columns = 1;
+  repeated PreviewRow rows = 2;
+  repeated string warnings = 3;
+  string create_table_ddl = 4;
+  string copy_into_sql = 5;
+}

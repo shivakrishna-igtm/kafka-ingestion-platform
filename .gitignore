@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+node_modules/
+dist/
+nohup.out
+preview_pb2.py
+preview_pb2_grpc.py
+.env

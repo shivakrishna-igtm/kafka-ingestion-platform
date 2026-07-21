@@ -1,0 +1,45 @@
+# Full local stack: UI + API + gRPC preview + Redis + Redpanda (Kafka-compatible)
+# Run: docker compose up --build
+# UI at http://localhost:3000  ·  API docs at http://localhost:8000/docs
+services:
+  frontend:
+    build: ./frontend
+    ports: ["3000:80"]
+    depends_on: [backend]
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports: ["8000:8000"]
+    environment:
+      JWT_SECRET: change-me-in-prod
+      DATABASE_URL: sqlite:////data/registry.db
+      REDIS_URL: redis://redis:6379/0
+      PREVIEW_GRPC_TARGET: preview:50051
+      KAFKA_BOOTSTRAP: redpanda:9092
+    volumes:
+      - registry-data:/data
+    depends_on: [preview, redis, redpanda]
+
+  preview:
+    build: ./preview-service
+    expose: ["50051"]
+
+  redis:
+    image: redis:7-alpine
+    expose: ["6379"]
+
+  redpanda:
+    image: redpandadata/redpanda:v24.1.7
+    command:
+      - redpanda start
+      - --overprovisioned
+      - --smp 1
+      - --memory 512M
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:9092
+    expose: ["9092"]
+
+volumes:
+  registry-data:
