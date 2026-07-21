@@ -12,11 +12,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:////data/registry.db
-    disk:
-      name: registry-data
-      mountPath: /data
-      sizeGB: 1
+        value: sqlite:////tmp/registry.db
 
   - type: web
     name: kafka-portal-ui
