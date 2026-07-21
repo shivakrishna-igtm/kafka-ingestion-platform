@@ -2,7 +2,10 @@ import type {
   CompatibilityResult, FieldDef, PreviewResult, Session, Topic,
 } from "../types";
 
-const BASE = "";
+// In combined deployments (nginx proxying /api) this stays empty.
+// In decoupled deployments (separate static site + API service),
+// set VITE_API_URL at build time to the API's public URL.
+const BASE = import.meta.env.VITE_API_URL ?? "";
 
 async function request<T>(path: string, session: Session | null,
                           init: RequestInit = {}): Promise<T> {

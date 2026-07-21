@@ -1,0 +1,32 @@
+# Render Blueprint — deploys both services from this repo in one click.
+# Dashboard: New + -> Blueprint -> select this repo.
+services:
+  - type: web
+    name: kafka-portal-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:////data/registry.db
+    disk:
+      name: registry-data
+      mountPath: /data
+      sizeGB: 1
+
+  - type: web
+    name: kafka-portal-ui
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://kafka-portal-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
