@@ -84,6 +84,18 @@ images on every push.
 - `/healthz` (liveness) and `/readyz` (readiness with dependency checks)
 - Docker `HEALTHCHECK`s on backend and preview service
 
+## Inspiration
+
+This project follows a pattern several companies have written about publicly. LinkedIn's
+engineering blog describes **Nuage**, their internal self-service portal for managing
+Kafka topics, and a schema registry service that lets producers register schemas so
+consumers can evolve safely without breaking downstream readers
+([Kafka Ecosystem at LinkedIn](https://www.linkedin.com/blog/engineering/open-source/kafka-ecosystem-at-linkedin)).
+Confluent's Schema Registry documents the same BACKWARD/FORWARD compatibility model
+this project's compatibility checker implements. This project is my own implementation
+of that general pattern — built to get hands-on with the mechanics (compatibility rules,
+type mapping to a warehouse) rather than a copy of any specific company's internal system.
+
 ## Notes on the Snowflake model
 
 The preview service models the staged-loading path (files land in a stage,
